@@ -11,6 +11,7 @@ namespace Kaotoby.Openhack.Serverless.Challenge2
     {
         public async Task<Product[]> GetProductsAsync()
         {
+
             using (HttpClient httpClient = new HttpClient())
             {
                 string response = await httpClient.GetStringAsync("https://serverlessohproduct.trafficmanager.net/api/GetProducts");
