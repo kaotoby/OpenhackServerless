@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Kaotoby.Openhack.Serverless.Chanllage2.Models
+namespace Kaotoby.Openhack.Serverless.Challenge2.Models
 {
     public class Rating
     {

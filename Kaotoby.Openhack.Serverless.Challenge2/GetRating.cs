@@ -7,9 +7,9 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Kaotoby.Openhack.Serverless.Chanllage2.Models;
+using Kaotoby.Openhack.Serverless.Challenge2.Models;
 
-namespace Kaotoby.Openhack.Serverless.Chanllage2
+namespace Kaotoby.Openhack.Serverless.Challenge2
 {
     public static class GetRating
     {

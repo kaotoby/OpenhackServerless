@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace Kaotoby.Openhack.Serverless.Chanllage1
+namespace Kaotoby.Openhack.Serverless.Challenge1
 {
     public static class GetProductInfo
     {

@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kaotoby.Openhack.Serverless.Chanllage2
+namespace Kaotoby.Openhack.Serverless.Challenge2
 {
     public class ApiRepository
     {
