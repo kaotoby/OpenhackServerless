@@ -19,7 +19,7 @@ namespace Kaotoby.Openhack.Serverless.Challenge6
         [FunctionName("BatchProcessCsv"), Singleton]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
-            [Blob("joseblob", Connection = "MyStorageAccountAppSetting")]CloudBlobContainer myBlob,
+            [Blob("challenge6", Connection = "StorageAccountConnection")]CloudBlobContainer myBlob,
             [CosmosDB(
                 databaseName: "c6",
                 collectionName: "Orders",
@@ -43,9 +43,9 @@ namespace Kaotoby.Openhack.Serverless.Challenge6
             Dictionary<string, List<Order>> batchesProcessed = new Dictionary<string, List<Order>>();
             foreach (var kvp in batches)
             {
-                string batchName = kvp.Key;
+                string batchId = kvp.Key;
                 CloudBlockBlob[] batchFiles = kvp.Value;
-                log.LogInformation($"Processing batch {batchName}");
+                log.LogInformation($"Processing batch {batchId}");
 
                 Dictionary<string, Task<Stream>> fileDataMap = null;
                 try
@@ -54,6 +54,7 @@ namespace Kaotoby.Openhack.Serverless.Challenge6
                     await Task.WhenAll(fileDataMap.Values);
 
                     List<Order> orders = ParseCsvData(
+                        batchId,
                         fileDataMap["ProductInformation.csv"].Result,
                         fileDataMap["OrderLineItems.csv"].Result,
                         fileDataMap["OrderHeaderDetails.csv"].Result);
@@ -88,7 +89,7 @@ namespace Kaotoby.Openhack.Serverless.Challenge6
             return new JsonResult(batchesProcessed.ToArray());
         }
 
-        public static List<Order> ParseCsvData(Stream productInformationFile, Stream orderLineItemsFile, Stream orderHeaderDetailFile)
+        public static List<Order> ParseCsvData(string batchId, Stream productInformationFile, Stream orderLineItemsFile, Stream orderHeaderDetailFile)
         {
             Dictionary<string, Product> products;
             Dictionary<string, OrderLineItem[]> orderLineItems;
@@ -128,6 +129,7 @@ namespace Kaotoby.Openhack.Serverless.Challenge6
                     .Select(order => new Order()
                     {
                         id = order.ponumber,
+                        BatchId = batchId,
                         DateTime = DateTime.Parse(order.datetime),
                         TotalCost = decimal.Parse(order.totalcost),
                         TotalTax = decimal.Parse(order.totaltax),
@@ -150,6 +152,7 @@ namespace Kaotoby.Openhack.Serverless.Challenge6
     public class Order
     {
         public string id { get; set; }
+        public string BatchId { get; set; }
         public DateTime DateTime { get; set; }
         public Location Location { get; set; }
         public decimal TotalCost { get; set; }
