@@ -70,17 +70,13 @@ namespace Kaotoby.Openhack.Serverless.Challenge8
                 timestamp = DateTime.UtcNow
             };
             rating.sentimentScore = await GetScore(rating.id.ToString(), rating.userNotes);
+            if (rating.sentimentScore < 0.3)
+            {
+                log.LogWarning("Bad sentiment score {0}, {1}, {2}", rating.sentimentScore, rating.userNotes, rating.id);
+            }
 
             // Save to db
             await ratings.AddAsync(rating);
-
-            // Trigger Logic App
-            using (HttpClient httpClient = new HttpClient())
-            {
-                string json = JsonConvert.SerializeObject(rating);
-                string url = "https://prod-01.centralus.logic.azure.com:443/workflows/e938333782c84298a604ab2e32be0655/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=sCeibNnsiT8KC7_1YmpuL1bzKEuAleVuFKEzhPXuEes";
-                await httpClient.PostAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
-            }
 
             return new JsonResult(rating);
 
